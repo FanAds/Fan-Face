@@ -1,0 +1,15 @@
+---
+layout: default
+---
+
+<div class="home-wrapper">
+
+  <ul class="post-list">
+    {% for post in site.posts %}
+      <li>
+        {% include card.html post=post %}
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>
