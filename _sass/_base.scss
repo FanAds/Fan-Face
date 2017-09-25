@@ -91,16 +91,16 @@ h1, h2, h3, h4, h5, h6 {
  * Links
  */
 a {
-    color: $brand-color;
+    // color: $brand-color;
     text-decoration: none;
 
     &:visited {
-        color: darken($brand-color, 15%);
+        // color: darken($brand-color, 15%);
     }
 
     &:hover {
-        color: $text-color;
-        text-decoration: underline;
+        // color: $text-color;
+        text-decoration: none;
     }
 }
 
@@ -189,6 +189,24 @@ pre {
         padding-right: 0;
         padding-left: 0;
         text-align: center
+    }
+}
+
+.post-wrapper {
+    margin: 30px 0px;
+    padding: 30px 40px;
+
+    @include media-query($on-palm) {
+        padding: 30px 15px;
+    }
+
+    article.post {
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+        @include media-query($on-laptop) {
+            width: 95%;
+        }
     }
 }
 

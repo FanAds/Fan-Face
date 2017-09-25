@@ -18,7 +18,6 @@
     line-height: 56px;
     letter-spacing: -1px;
     margin-bottom: 0;
-    float: left;
 
     &,
     &:visited {
@@ -29,15 +28,17 @@
 .site-nav {
     line-height: 60px;
 
-    .page-link {
-        color: $text-color;
-        line-height: $base-line-height;
+    // .page-link {
+    //     color: $text-color;
+    //     line-height: $base-line-height;
 
-        // Gaps between nav items, but not on the last one
-        &:not(:last-child) {
-            margin-right: 20px;
-        }
-    }
+    //     // Gaps between nav items, but not on the last one
+    //     &:not(:last-child) {
+    //         margin-right: 20px;
+    //     }
+    // }
+
+    text-align: center;
 
     @include media-query($on-palm) {
         
@@ -135,6 +136,10 @@
     > li {
         display: inline-block;
         margin-bottom: $spacing-unit;
+    }
+
+    li .card:hover {
+        box-shadow: -10px -14px 20px 4px rgba(0, 0, 0, 0.08);
     }
 }
 
@@ -240,10 +245,12 @@
         padding: 15px;
         height: 105px;
         .title {
+            color: black;
             font-family: "HelveticaNeueMed", sans-serif;
             font-size: 24px;
         }
         .excerpt {
+            color: black;
             line-height: 20px;
             font-size: 14px;
         }
@@ -267,5 +274,78 @@
                 color: #9d9d9d;
             }
         }
+    }
+}
+
+.standard.img {
+    img {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+}
+
+.standard.video {
+    video {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        width: 500px;
+        @include media-query($on-laptop) {
+            max-width: 100% !important;
+        }
+    }
+}
+
+.standard.yt.embed {
+    position: relative;
+    padding-top: 25px;
+    padding-bottom: 56.25%; /* aspect ratio 16:9 */
+    height: 0;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    iframe {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.img {
+    img {
+        margin-left: auto;
+        max-width: 100% !important;
+        margin-right: auto;
+        display: block;
+    }
+}
+
+.video, .medium-insert-videos {
+    video {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        width: 500px;
+        @include media-query($on-laptop) {
+            max-width: 100% !important;
+        }
+    }
+}
+
+.yt.embed {
+    position: relative;
+    padding-top: 25px;
+    padding-bottom: 56.25%; /* aspect ratio 16:9 */
+    height: 0;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    iframe {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
     }
 }
