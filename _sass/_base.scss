@@ -203,7 +203,7 @@ pre {
     article.post {
         margin-left: auto;
         margin-right: auto;
-        width: 90%;
+        width: 80%;
         @include media-query($on-laptop) {
             width: 95%;
         }
