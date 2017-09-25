@@ -1,0 +1,80 @@
+--- 
+layout: premium
+---
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+  <script type="text/javascript">
+        /* Set the width of the side navigation to 250px */
+    function openNav() {
+        document.getElementById("slidenav").style.width = "352px";
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("slidenav").style.width = "0";
+    }
+  </script>
+  <body>
+    <div id="slidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="/">HOME</a>
+    </div>
+    {% include header.html %}
+
+    <div class="page-content">
+        <div class="background-post">
+            <div class="wrapper">
+                <div class="post-wrapper">
+                    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">{{ page.title }}</h1> {% if site.share == true %}{% include share.html %}{% endif %}
+                            <p class="post-meta">
+                                <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>{% if page.author %} • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>{% endif %}</p>
+                        </header>
+                        <div class="post-content" itemprop="articleBody">
+                            {{ content }}
+                        </div>
+                        <div id="subscribe">
+                            <div class="subscribe" id="subscribeContainer">
+                                <center>
+                                    <h5>Subscribe to our mailing list</h5></center>
+                                <div class="subscribeForm">
+                                    <input type="email" placeholder="Email Address" class="email" id="subscribeEmail" />
+                                    <input type="submit" value="Subscribe" class="btn" onclick="subscribe()" />
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <div id="advertisement-after-post">
+        </div>
+        <div class="background-feed">
+            <div class="wrapper">
+                <ul class="post-list-feed">
+                    <h2>More stories</h2> {% for post in site.posts limit:10 %}
+                    <li>
+                        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
+                            <div class="cover">
+                                {% if post.cover %}<img class="freeze" src="{{post.cover}}">{% endif %}
+                                <div class="cover-overlay">
+                                </div>
+                            </div>
+                            <div class="details">
+                                <div class="detail-title">{{ post.title }}</div>
+                                <div class="detail-excerpt">{{ post.excerpt | truncatewords:30}}</div>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% include footer.html %}
+  </body>
+</html>
+

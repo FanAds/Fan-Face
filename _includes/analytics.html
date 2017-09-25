@@ -1,0 +1,15 @@
+<script type="text/javascript">
+(function(w, d, s, u, f, n, a) {
+    w['fanalyticsObject'] = f;
+    w[f] = w[f] || function() {
+        (w[f].q = w[f].q || []).push(arguments)
+    };
+    w[f].t = 1 * new Date();
+    n = d.createElement(s);
+    a = d.getElementsByTagName(s)[0];
+    n.async = 1;
+    n.src = u;
+    a.parentNode.insertBefore(n, a);
+})(window, document, 'script', 'https://analytics.fanadnetwork.com/fanalytics.js', 'fanalytics');
+fanalytics('create', "P-{{site.fb_page_id}}");
+</script>

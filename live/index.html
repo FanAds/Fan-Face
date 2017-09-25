@@ -1,0 +1,193 @@
+--- 
+layout: default 
+image: http://static.fanadnetwork.com/f0ef07249d6d7431c0ec975a720a010d.png
+---
+<style type="text/css">
+.center {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+@media screen and (min-width: 800px) {
+    .center {
+    	max-width: 600px;
+    }
+}
+
+#live-section {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+@media screen and (max-width: 600px) {
+    .center {
+    	max-width: 600px;
+    }
+    
+    #live-section .video-js {
+    	width: 100% !important;
+	}
+}
+
+.loader.show {
+    border: 16px solid #f3f3f3;
+    /* Light grey */
+    border-top: 16px solid #3498db;
+    /* Blue */
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+#live-video {
+	max-width: 100% !important;
+	border-radius: 4px;
+}
+
+.error-message {
+	text-align: center;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>
+<section class="center">
+	<div class="loader hide">
+	</div>
+	<div id="live-section">
+	</div>
+	<div class="error-message">
+	</div>
+</section>
+<link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+<script src="//vjs.zencdn.net/5.19/video.min.js"></script>
+<script src="https://flive.fanadnetwork.com/livejs/dash/dist/dash.all.debug.js"></script>
+<!-- <script src="https://flive.fanadnetwork.com/livejs/videojs-dash/videojs-dash.js"></script> -->
+<!-- <script src="https://flive.fanadnetwork.com/livejs/hls/dist/videojs-contrib-hls.min.js"></script> -->
+<script>
+function get(url, data, onsuccess, onerror) {
+
+    var params = [];
+    Object.keys(data).forEach(function(key) {
+        params.push(key + "=" + encodeURIComponent(data[key]));
+    });
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.addEventListener("readystatechange", function() {
+        if (this.readyState === 4) {
+            if (this.status == 200) {
+                onsuccess(this);
+            } else {
+                onerror(this);
+            }
+        }
+    });
+
+    xhr.open("GET", url + "?" + params.join('&'));
+
+    xhr.send();
+}
+
+function showLoading(canShow) {
+	if(canShow) {
+		if(loader[0].classList.contains("hide")) {
+			loader[0].classList.remove("hide");
+		}
+		if(!loader[0].classList.contains("show")) {
+			loader[0].classList.add("show");
+		}
+	} else {
+		if(loader[0].classList.contains("show")) {
+			loader[0].classList.remove("show");
+		}
+		if(!loader[0].classList.contains("hide")) {
+			loader[0].classList.add("hide");
+		}
+	}
+}
+
+function loadJS(file, callback) {
+    var jsElm = document.createElement("script");
+    jsElm.type = "application/javascript";
+    jsElm.src = file;
+    document.body.appendChild(jsElm);
+    jsElm.onload = function () {
+    	callback();
+    }
+}
+
+var liveDiv = document.getElementById("live-section");
+var loader = document.getElementsByClassName("loader");
+var error = document.getElementsByClassName("error-message");
+
+showLoading(true);
+
+var pageId = document.head.querySelector("meta[property='fb:pages']").content;
+var params = {};
+if(pageId != null) {
+	params.page_id = pageId;
+
+	var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+	if(userAgent.match( /iPad/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPod/i )) {
+		params.is_ios = 1;
+	} else {
+		params.is_ios = 0;
+	}
+
+	try {
+		get("https://fbfanads.com/fanads-backend/pages/live/getStreamKeyForViewers.php", params, function(response) {
+			if(params.is_ios == 0) {
+				loadJS("https://flive.fanadnetwork.com/livejs/video-js-dash/dist/videojs-dash.js", function () {
+					showLoading(false);
+				    liveDiv.innerHTML = "<video id=live-video width=600 height=300 class='video-js vjs-default-skin vjs-16-9' controls> </video>";
+				    var player = videojs('live-video');
+				    var responseJson = JSON.parse(response.responseText);
+				    if (responseJson.status == "success") {
+				        player.src({
+				            src: responseJson.data.stream_key,
+				            type: responseJson.data.type
+				        });
+				        fanalytics('send', 'liveview', {key: responseJson.data.stream_key});
+				       	return false;
+				    }
+				});
+			} else {
+				loadJS("https://flive.fanadnetwork.com/livejs/hls/dist/videojs-contrib-hls.min.js", function () {
+					showLoading(false);
+				    liveDiv.innerHTML = "<video id=live-video class='video-js vjs-default-skin' controls> </video>";
+				    var player = videojs('live-video');
+				    var responseJson = JSON.parse(response.responseText);
+				    if (responseJson.status == "success") {
+				        player.src({
+				            src: responseJson.data.stream_key,
+				            type: responseJson.data.type
+				        });
+				        fanalytics('send', 'liveview', {key: responseJson.data.stream_key});
+				        return false;
+				    }
+				});
+			}
+		}, function(response) {
+			error[0].innerHTML = "<h3>The stream could not be played now.</h3>";
+			showLoading(false);
+		});
+	} catch(e) {
+			console.log(e);
+	}
+} else {
+	error[0].innerHTML = "<h3>" + "Please message help@fanstories.co with the message page_id missing in " + window.location.hostname + ". Thanks." + "</h3>"
+}
+</script>

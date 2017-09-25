@@ -1,0 +1,140 @@
+---
+layout: default
+---
+<div class="dashboard-wrapper">
+	<div class="dashboard-container">
+		<h2>
+			Dashboard
+		</h2>
+		<div class="panel invoices">
+			<div class="panel-heading">
+				<b>Invoices</b>
+			</div>
+			<div class="panel-body">
+				<div class="table">
+					<table>
+						<thead>
+							<tr>
+								<td>
+									Plan
+								</td>
+								<td>
+									Amount
+								</td>
+								<td>
+									Start Date
+								</td>
+								<td>
+									End Date
+								</td>
+								<td>
+									Date
+								</td>
+							</tr>
+						</thead>
+						<tbody id="invoicesTableBody">
+								
+						</tbody>
+					</table>
+					<div id="invoices-load-message">
+						
+					</div>
+					<!-- <div class="load-more">
+						<button class="load-more-btn" onclick="loadMore()">load More</button>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+fanalytics('send', 'pageview', {page: 'dashboard'});
+function loadInvoices(data, onsuccess, onerror) {
+
+	var params = [];
+	Object.keys(data).forEach(function (key) {
+		params.push(key + "=" + encodeURIComponent(data[key]));
+	});
+
+	var xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
+
+	xhr.addEventListener("readystatechange", function () {
+	  if (this.readyState === 4) {
+	    if(this.status == 200) {
+	    	onsuccess(this);
+	    } else {
+	    	onerror(this);
+	    }
+	  }
+	});
+
+	xhr.open("GET", "/invoices?" + params.join('&'));
+	xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("authorization", "Bearer " + token);
+	xhr.setRequestHeader("cache-control", "no-cache");
+	xhr.setRequestHeader("postman-token", "91955551-b20c-6eb1-80cb-fc9ad092756d");
+
+	xhr.send();
+}
+
+function setInvoices(invoices) {
+	var columns = ['plan', 'amount', 'start_date', 'end_date', 'date'];
+	var tableBody = document.getElementById("invoicesTableBody");
+	if(invoices.length > 0) {
+		var tableData = [];
+		invoices.forEach( function(invoice, index) {
+			var tr = document.createElement("tr");
+			columns.forEach(function(column) {
+				var td = document.createElement("td");
+				if(column == 'plan') {
+					td.innerText = "Premium";
+				} else if(column == "date") {
+					var date = new Date(invoice.start_date * 1000).toLocaleDateString();
+					td.innerText = date;
+				} else {
+					if(column == "start_date") {
+						var date = new Date(invoice.start_date * 1000).toLocaleDateString();
+						td.innerText = date;
+					} else if (column == "end_date") {
+						var date = new Date(invoice.end_date * 1000).toLocaleDateString();
+						td.innerText = date;
+					} else if (column == "amount") {
+						td.innerText = "$" + (parseInt(invoice[column]) / 100);
+					} else {
+						td.innerText = invoice[column];
+					}
+				}
+				tr.appendChild(td);
+			});
+			tableBody.appendChild(tr);
+		});
+	}
+}
+
+var data = {
+	page_id: "{{site.fb_page_id}}",
+	offset: 1,
+	limit: 10
+};
+
+function invoicesLoadMessage(message) {
+	var invoicesLoad = document.getElementById("invoices-load-message");
+	invoicesLoad.innerHTML = "<p>" + message + "</p>";
+}
+
+if(token != undefined && token.length) {
+	invoicesLoadMessage("Loading..");
+	loadInvoices(data, function (response) {
+		responseJson = JSON.parse(response.responseText);
+		if(responseJson.status == "success") {
+			invoicesLoadMessage("");
+			setInvoices(responseJson.data);
+		} else {
+			invoiceLoadMessage(responseJson.message);
+		}
+	}, function (response) {
+		invoiceLoadMessage("Something went wrong!");
+	});
+}
+</script>

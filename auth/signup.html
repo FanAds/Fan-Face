@@ -1,0 +1,200 @@
+--- 
+layout: default 
+---
+<div class="signup-wrapper">
+    <div class="signup-container">
+        <h2>Create an {{site.title}} account</h2>
+        <form id="signup">
+            <div class="signup-input">
+                <label>Full Name</label><span id="incorrect-name" class="incorrect"></span>
+                <input type="text" name="name" required="">
+            </div>
+            <div class="signup-input">
+                <label>Email Address</label><span id="incorrect-email" class="incorrect"></span>
+                <input type="email" name="email" required="">
+            </div>
+            <div class="signup-input">
+                <label>Password</label><span id="incorrect-password" class="incorrect"></span>
+                <input type="password" name="password" required="">
+            </div>
+            <div class="signup-input">
+                <label>Gender</label><span id="incorrect-gender" class="incorrect"></span>
+                <br>
+                <input type="radio" name="gender" checked="" value="m"> Male
+                <input type="radio" name="gender" value="f"> Female
+            </div>
+            <div class="signup-input submit">
+                <input type="button" name="submitBtn" value="Sign Up" onclick="signup()" data-target="fanalytics" data-value="signup-btn">
+            </div>
+            <div class="signup-message">
+                <span id="error-available">
+
+                </span>
+                <span id="error-none">
+
+                </span>
+                <span id="error-other">
+                    
+                </span>
+            </div>
+        </form>
+        <div class="login">
+            Already have an account? <a onclick="goToLogin()">Login</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+fanalytics('send', 'pageview', {page: 'signup'});
+function getAllUrlParams(url) {
+    var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+    var obj = {};
+    if (queryString) {
+        queryString = queryString.split('#')[0];
+        var arr = queryString.split('&');
+        for (var i = 0; i < arr.length; i++) {
+            var a = arr[i].split('=');
+            if(a.length == 2) {
+
+            }
+            var paramNum = undefined;
+            var paramName = a[0].replace(/\[\d*\]/, function(v) {
+                paramNum = v.slice(1, -1);
+                return '';
+            });
+
+            var paramValue = typeof(a[1]) === 'undefined' ? null : a[1];
+            paramName = paramName.toLowerCase();
+            if(paramValue !== null)
+                paramValue = paramValue.toLowerCase();
+
+            if (obj[paramName]) {
+                if (typeof obj[paramName] === 'string') {
+                    obj[paramName] = [obj[paramName]];
+                }
+                if (typeof paramNum === 'undefined') {
+                    obj[paramName].push(paramValue);
+                } else {
+                    obj[paramName][paramNum] = paramValue;
+                }
+            } else {
+                obj[paramName] = paramValue;
+            }
+        }
+    }
+
+    return obj;
+}
+
+let searchString = decodeURIComponent(window.location.search);
+var urlParams = -1;
+if(searchString.length) {
+    urlParams = getAllUrlParams(searchString);
+}
+var redirectTo = '';
+if(urlParams.redirect_to !== undefined) {
+    console.log(urlParams);
+    redirectTo = urlParams.redirect_to;
+}
+
+function goToLogin() {
+    console.log('SignUp: ', redirectTo);
+    if(redirectTo && redirectTo.length) {
+        window.location.href = "/auth/signin.html?redirect_to=" + redirectTo;
+    } else {
+        window.location.href = "/auth/signin.html";
+    }
+}
+
+function getGender() {
+    var genders = document.getElementsByName("gender");
+    for (var i = genders.length - 1; i >= 0; i--) {
+        if (genders[i].checked == true) {
+            return genders[i].value;
+        }
+    }
+    return "m";
+}
+
+function checkValidity(data) {
+    let invalidKeys = [];
+    for (key in data) {
+        if (data[key].length == 0 || data[key] == null) {
+            invalidKeys.push(key);
+        }
+    }
+    if (invalidKeys.length) {
+        throw invalidKeys;
+    }
+    return true;
+}
+
+function post(data, onsuccess, onerror) {
+    var dataArray = [];
+    for (key in data) {
+        dataArray.push(key + "=" + encodeURIComponent(data[key]));
+    }
+    data = dataArray.join("&");
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function() {
+        if (this.readyState === 4) {
+            if (this.status == 200) {
+                onsuccess(this);
+            } else {
+                onerror(this);
+            }
+        }
+    });
+
+    xhr.open("POST", "/create");
+    xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("cache-control", "no-cache");
+    xhr.send(data);
+}
+
+function showMessage(type, message) {
+    document.getElementById("error-" + type).innerText = message;
+}
+
+function signup() {
+    document.getElementsByName("submitBtn")[0].disabled = true;
+    var data = {};
+    var signupForm = document.getElementById("signup");
+    data.email = document.getElementsByName("email")[0].value;
+    data.name = document.getElementsByName("name")[0].value;
+    data.password = document.getElementsByName("password")[0].value;
+    data.gender = getGender();
+    for (key in data) {
+        document.getElementById("incorrect-" + key).innerHTML = "";
+    }
+    data.blog_url = window.location.hostname;
+    data.page_id = "{{site.fb_page_id}}";
+    try {
+        if (checkValidity(data)) {
+            post(data, function(response) {
+                var responseJson = JSON.parse(response.responseText);
+                if (responseJson.status == "success") {
+                    showMessage("none", "Success");
+                    if(redirectTo.length) {
+                        window.location.href = redirectTo;
+                    } else {
+                        window.location.href = '/auth/plan.html';
+                    }
+                } else {
+                    showMessage("available", "User already registered");
+                }
+                document.getElementsByName("submitBtn")[0].disabled = false;
+            }, function(error) {
+                showMessage("other", "Something went srong!");
+                document.getElementsByName("submitBtn")[0].disabled = false;
+            });
+        }
+    } catch (e) {
+        e.forEach(function(element, index) {
+            document.getElementById("incorrect-" + element).innerHTML = "&#10008;";
+        });
+        document.getElementsByName("submitBtn")[0].disabled = false;
+    }
+}
+</script>

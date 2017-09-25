@@ -1,7 +1,8 @@
 <header class="site-header">
-  <div class="nav-wrapper">
+  <div class="nav-wrapper" id="nav-auth">
+  	<a class="site-title" href="{{ site.baseurl }}/">{% if site.logo and site.logo.size > 0 %}<img src="{{ site.logo }}">{% else %}{{site.title}}{% endif %}</a>
     <nav class="site-nav">
-      <a class="site-title" href="{{ site.baseurl }}/">{{ site.title }}</a>
+      
     </nav>
   </div>
 </header>

@@ -1,0 +1,135 @@
+--- 
+layout: premium_sample
+---
+<!DOCTYPE html>
+<html>
+{% include head.html %}
+<script type="text/javascript">
+/* Set the width of the side navigation to 250px */
+function openNav() {
+    document.getElementById("slidenav").style.width = "352px";
+}
+
+/* Set the width of the side navigation to 0 */
+function closeNav() {
+    document.getElementById("slidenav").style.width = "0";
+}
+</script>
+
+<body>
+    <div id="slidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="/">HOME</a>
+    </div>
+    {% include header.html %}
+    <div class="page-content">
+        <div class="background-post">
+            <div class="wrapper">
+                <div class="post-wrapper">
+                    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+                        <header class="post-header">
+                            <h1 class="post-title" itemprop="name headline">{{ page.title }}</h1> {% if site.share == true %}{% include share.html %}{% endif %}
+                            <p class="post-meta">
+                                <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>{% if page.author %} • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>{% endif %}</p>
+                        </header>
+                        <div class="post-content" itemprop="articleBody">
+                            <div style="width:100%;position:relative;">
+                                <div style="color: #c1c1c1;padding:10px; background: url('http://static.fbfanadnetwork.com/10155818410d6670530ca57c47484d45.png') repeat; filter: blur(6px);-webkit-filter: blur(6px); -moz-filter: blur(6px); -o-filter: blur(6px); -ms-filter: blur(6px); color:#999;">
+                                    <p style="text-align: justify;">
+                                        <!--<img src="/img/restricted.png" style="width:100%;">-->
+                                        <br/>
+                                        <br/> There are signs that the premium ad inventory bucket on mobile is starting to expand, and expand in a very real way, including what I call the "new premium."
+                                        <br/>
+                                        <br/>
+                                        <br> What is the new premium? It is simply made up of publishers who don't have, or need, the broadcast-quality imprimatur. They play successfully with two other variables in the brand buyer's four-sided decision set: targeting and reach.
+                                        <br/>
+                                        <br/>
+                                        <br> Take a look, for instance, at the top 25 free iPhone apps at the time of this writing. There are two owned by traditional "premium" broadcasters: MySpace and The Weather Channel. The rest are a mix of utility, social, games, and independent entertainment apps. Even in the entertainment category, there is only one media-company-owned app in the top 25: Star Trek's Captain Log. Consider also the eMarketer chart below.
+                                        <br/>
+                                        <br/>
+                                        <br>
+                                        <br> Not only are the traditional premium brands not present in a significant way in the app ecosystem, but total attention is shifting away from their areas of strength: broadcast and even online.
+                                        <br/>
+                                        <br/>
+                                        <br> What does this mean for advertisers and publishers? None of the venerable broadcast brands have near the usage or interaction level of a fun little app called Type and Talk (the top free app in the iTunes store as of this writing). Yet advertisers remain reluctant to commit the same level of contextual faith in these newly popular channels as they have and do in the traditionally popular channels.
+                                        <br/>
+                                        <br/>
+                                        <br> It's too easy to blame the brand ad buyers for buying narrow context, but that is a publisher cop-out. Advertisers will buy when they are told why they should, and it is the publisher's job to understand those objectives to get the buy.
+                                        <br/>
+                                        <br/>
+                                        <br>
+                                        <br> The new premium publishers do not have the traditionally exalted context of prime-time entertainment, but they do know their audience very well and they are building reach around that audience. Rather than dismiss buyers of context, new premium publishers have created value by embracing their audience. Place the right brand ad in the right place in front of the right person. They've changed the game, and brands are starting to follow.
+                                        <br/>
+                                        <br/>
+                                        <br> Many app developers fail to recognize that they have the opportunity, in fact the need, to optimize their targeting and reach. When was the last time you downloaded an app and it asked you your age and gender? If you are an app developer, are you launching your apps to drive downloads or to make money? The answer seems obvious, but it's surprising how few steps app developers take to ensure their apps are positioned to make money, ready to be part of the new premium.
+                                        <br/>
+                                        <br/>
+                                        <br> If users spend five minutes downloading your app over a 3G network, they very likely will spend a couple seconds more to tell you a little about themselves. Take the data. Learn about your audience. Get intimate with them, and your advertisers will reward you. It is not intrusive. In fact, the more you know about your audience, the better you can serve advertisers, meaning the more money you make and potentially the fewer ads you need to show. In the end, you are thrilling users with fewer more-targeted ads. This is the direction the new premium publishers are taking, and advertisers are rewarding them with big buys at high CPMs.
+                                        <br>
+                                        <br/>
+                                        <br/> So if you are a publisher, start to know your audience better than anyone else and you can make up for a loss of perceived value of the "context" of your channel. Learn who they are. Apple certainly is by leveraging iTunes data, so shouldn't you know your audience just as well if not better? New premium publishers know this and are executing on it well. It's time you joined their ranks.
+                                        <br/>
+                                        <br/>
+                                        <br> - See more at: http://www.imediaconnection.com/articles/ported-articles/red-dot-articles/2010/aug/the-new-definition-of-premium-content/#sthash.zOIHygsp.dpuf
+                                    </p>
+                                </div>
+                                <div style="position:absolute;top:0px;height:160px;width:100%;padding:20% 0px;z-index:+1;">
+                                    <center> <img src="/img/lock.png" /></center>
+                                    <h3 style="font-family:Quicksand;font-weight: bold;"> <center>You've reached Premium content.</center></h3>
+                                    <h4 style="font-family:Quicksand;"><center>Subscribe to get instant access to premium content.</center></h4> {% assign amount = site.paywall_amount | plus:0 | divided_by: 100 %}
+                                    <h4 style="font-family:Quicksand;"><center> for just ${{amount}} a month</center></h4>
+                                    <p style="margin:30px auto;">
+                                        <center>
+                                            <a href="/auth/signup.html" class="subscribe" data-target="fanalytics" data-value="subscribe-btn" style="color: #fff;background: #ff0000;padding: 13px 28px;border-radius: 3px;font-weight: bold;margin: 30px auto;">Subscribe now</a>
+                                        </center>
+                                    </p>
+                                    <center><p style="font-size: 12px">In case you've already subscribed and the content is not shown, try reloading the page. In case of queries contact help at help@fanstories.co</p></center>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                            fanalytics('send', 'postview', {article_id: "{{page.article_id}}", is_premium: "{{page.premium}}"});
+                            if (token && token.length) {
+                                var decodedToken = decodeToken(token);
+                            }
+                            </script>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <div id="advertisement-after-post">
+        </div>
+        <div class="background-feed">
+            <div class="wrapper">
+                <ul class="post-list-feed">
+                    <h2>More stories</h2> {% for post in site.posts limit:10 %}
+                    <li>
+                        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
+                            <div class="cover">
+                                {% if post.cover %}<img class="freeze" src="{{post.cover}}">{% endif %}
+                                <div class="cover-overlay">
+                                </div>
+                            </div>
+                            <div class="details">
+                                <div class="detail-title">{{ post.title }}</div>
+                                <div class="detail-excerpt">{{ post.excerpt | truncatewords:30}}</div>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% include footer.html %}
+</body>
+<script type="text/javascript" src="http://ad.fanadnetwork.com/ad.js"></script>
+<script type="text/javascript">
+var adAfterPost = new VideoAd();
+adAfterPost.events.initialize("advertisement-after-post", {
+    width: 320,
+    height: 240
+});
+</script>
+
+</html>

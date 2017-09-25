@@ -1,0 +1,92 @@
+--- 
+layout: default 
+---
+<div class="plan-wrapper">
+    <div class="plan-container">
+        {% assign amount = site.paywall_amount | plus:0 | divided_by: 100 %} {% assign amount_in_cents = site.paywall_amount | plus:0 %}
+        <h2 id="sub-renew-message"></h2>
+        <button id="subscribeButton" data-target="fanalytics" data-value="subscribe-btn" onclick="goToPay()">Purchase at Fan Stories</button>
+        <div id="login">
+            Already subscribed? <a href="/auth/signin.html" id="login-link">Login</a>
+        </div>
+    </div>
+    <div class="message">
+        <span id="success">
+    </span>
+        <span id="error">
+    </span>
+    </div>
+</div>
+<script type="text/javascript">
+</script>
+<script>
+fanalytics('send', 'pageview', { page: 'plan' });
+
+function goToPay() {
+    if (token && token.length)
+        window.location.href = "https://www.fanstories.co/test_pay.html?p_id={{site.fb_page_id}}&site=" + window.location.hostname + "&uid=" + giveMeACookie() + "&token=" + token;
+    else
+        window.location.href = "/auth/signin.html?redirect_to=/auth/plan.html";
+}
+if (token && token.length) {
+    document.getElementById("login").outerHTML = '';
+
+    var decodedToken = decodeToken(token);
+    if (decodedToken.subscription.end_date == 0) {
+        document.getElementById("sub-renew-message").innerText = "Subscribe for ${{amount}} a month and get access to all premium articles.";
+    } else if (decodedToken.subscription.end_date < parseInt((new Date().getTime() / 1000))) {
+        document.getElementById("sub-renew-message").innerText = "Your subscription has expired. Renew for ${{amount}} a month and get access to all premium articles.";
+        document.getElementById("subscribeButton").innerText = "Renew";
+    } else {
+        document.getElementById("sub-renew-message").innerText = "You've already subscribed.";
+        var cancelButton = document.createElement("button");
+        cancelButton.innerText = "Cancel";
+        cancelButton.addEventListener('click', function(e) {
+            post('/cancel', { page_id:  {{ site.fb_page_id }} }, function(response) {
+                var responseJson = JSON.parse(response.responseText);
+                if (responseJson.status == "success") {
+                    document.getElementById("success").innerText = "Successfully Unsubscribed";
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    document.getElementById("error").innerText = "Could not unsubscribe";
+                }
+            }, function(response) {
+                document.getElementById("error").innerText = "Could not unsubscribe";
+            });
+        });
+        document.getElementsByClassName("plan-container")[0].appendChild(cancelButton);
+        document.getElementById('subscribeButton').remove();
+    }
+} else {
+    document.getElementById("sub-renew-message").innerText = "Subscribe for ${{amount}} a month and get access to all premium articles.";
+}
+
+
+function post(uri, data, onsuccess, onerror) {
+    var dataArray = [];
+    for (key in data) {
+        dataArray.push(key + "=" + encodeURIComponent(data[key]));
+    }
+    data = dataArray.join("&");
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function() {
+        if (this.readyState === 4) {
+            if (this.status == 200) {
+                onsuccess(this);
+            } else {
+                onerror(this);
+            }
+        }
+    });
+
+    xhr.open("POST", uri);
+    xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("cache-control", "no-cache");
+    xhr.setRequestHeader("authorization", "Bearer " + token);
+    xhr.send(data);
+}
+</script>
